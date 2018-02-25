@@ -4,11 +4,13 @@
 // Updates on 2nd run and then every 1001 ticks or if the global scope gets cleared.
 // Usage: After you require this file, just add this to anywhere in your main loop to run every tick: global.populateLOANlist();
 // global.LOANlist will contain an array of usernames after global.populateLOANlist() runs twice in a row (two consecutive ticks).
+// Memory.LOANalliance will contain the alliance short name after global.populateLOANlist() runs twice in a row (two consecutive ticks).
 global.populateLOANlist = function(LOANuser = "LeagueOfAutomatedNations", LOANsegment = 99) {
-    if ((typeof RawMemory.setActiveForeignSegment == "function") && !!~['shard0','shard1','shard2'].indexOf(Game.shard.name)) { // For running in sim or private servers without errors
+    if ((typeof RawMemory.setActiveForeignSegment == "function") && !!~['shard0','shard1','shard2'].indexOf(Game.shard.name)) { // To skip running in sim or private servers which prevents errors
         if ((typeof Memory.lastLOANtime == "undefined") || (typeof global.LOANlist == "undefined")) {
             Memory.lastLOANtime = Game.time - 1001;
             global.LOANlist = [];
+            if (typeof Memory.LOANalliance == "undefined") Memory.LOANalliance = "";
         }
 
         if (Game.time >= (Memory.lastLOANtime+1000)) {
@@ -24,12 +26,15 @@ global.populateLOANlist = function(LOANuser = "LeagueOfAutomatedNations", LOANse
                 let allMyRooms = _.filter(Game.rooms, (aRoom) => (typeof aRoom.controller != "undefined") && aRoom.controller.my);
                 if (allMyRooms.length == 0) {
                     global.LOANlist = [];
+                    Memory.LOANalliance = "";
                     return false;
                 }
                 let myUsername = allMyRooms[0].controller.owner.username;
                 for (let iL = (LOANdataKeys.length-1); iL >= 0; iL--) {
                     if (LOANdata[LOANdataKeys[iL]].indexOf(myUsername) >= 0) {
+                        //console.log("Player",myUsername,"found in alliance",LOANdataKeys[iL]);
                         global.LOANlist = LOANdata[LOANdataKeys[iL]];
+                        Memory.LOANalliance = LOANdataKeys[iL].toString();
                         return true;
                     }
                 }
@@ -39,6 +44,7 @@ global.populateLOANlist = function(LOANuser = "LeagueOfAutomatedNations", LOANse
         return true;
     } else {
         global.LOANlist = [];
+        Memory.LOANalliance = "";
         return false;
     }
 }
