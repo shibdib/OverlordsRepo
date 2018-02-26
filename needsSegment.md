@@ -5,7 +5,16 @@ Below if the standardized format for setting up a public segment that lists room
             "modified": Game.time,
             "energy": true,
             "XGH2O": true
-        }
+        },
+        "W51S25": {
+            "modified": Game.time,
+            "power": true
+        },
+        "W46S27": {
+            "modified": Game.time,
+            "G": true,
+            "H": true
+        },
 ```
 
 The key will be the room requesting the items. The modified propert will be the ingame tick that any changes to your requests were made. Then each property will be the item followed by the boolean true (or false). 
