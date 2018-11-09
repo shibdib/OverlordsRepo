@@ -7,6 +7,7 @@
  *
  **/
 // Store your requests for help into segment 22, to use this create an array with the rooms needing assistance called helpNeeded
+let helpNeeded = [];
 if (helpNeeded && helpNeeded.length && JSON.stringify(helpNeeded) !== RawMemory.segments[22]) RawMemory.segments[22] = JSON.stringify(helpNeeded);
 // Set segment as public/active
 RawMemory.setPublicSegments([22]);
@@ -33,6 +34,7 @@ if (Game.time % 33 === 0 && LOANlist && LOANlist.length) {
  *
  **/
 // Store your requests for help into segment 23, to use this create an array with the rooms needing assistance called attackNeeded
+let attackNeeded = [];
 if (attackNeeded && attackNeeded.length && JSON.stringify(attackNeeded) !== RawMemory.segments[23]) RawMemory.segments[23] = JSON.stringify(attackNeeded);
 // Set segment as public/active
 RawMemory.setPublicSegments([23]);
