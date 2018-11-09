@@ -45,7 +45,7 @@ if (Game.time % 33 === 0 && LOANlist && LOANlist.length) {
         let allianceUserAttack = RawMemory.setActiveForeignSegment(user, 23);
         if (allianceUserAttack && JSON.parse(allianceUserAttack).length) {
             helpRequested = true;
-            JSON.parse(allianceUserDefend).forEach((r) = > attackArray.push(r));
+            JSON.parse(allianceUserAttack).forEach((r) = > attackArray.push(r));
         }
     }
     if (helpRequested) Memory._alliedRoomAttack = attackArray; else Memory._alliedRoomAttack = undefined;
