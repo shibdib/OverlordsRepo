@@ -32,12 +32,12 @@ if (Game.time % 33 === 0 && LOANlist && LOANlist.length) {
  * THIS REQUIRES YOU TO BE USING THE LOANList GLOBAL CREATION SCRIPT
  *
  **/
-// Store your requests for help into segment 22, to use this create an array with the rooms needing assistance called helpNeeded
+// Store your requests for help into segment 23, to use this create an array with the rooms needing assistance called attackNeeded
 if (attackNeeded && attackNeeded.length && JSON.stringify(attackNeeded) !== RawMemory.segments[23]) RawMemory.segments[23] = JSON.stringify(attackNeeded);
 // Set segment as public/active
 RawMemory.setPublicSegments([23]);
 RawMemory.setActiveSegments([23]);
-// Every 33 ticks check to see if friends need help or not and if they do store them in Memory._alliedRoomDefense in array format
+// Every 33 ticks check to see if friends need help or not and if they do store them in Memory._alliedRoomAttack in array format
 if (Game.time % 33 === 0 && LOANlist && LOANlist.length) {
     let helpRequested;
     let attackArray = Memory._alliedRoomAttack || [];
