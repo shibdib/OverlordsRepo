@@ -2,7 +2,11 @@
  * This is memory migration code.
  * 
  * USAGE:
- * - Call migrate() with migration function name (such as `migration_sample`)
+ * - Add Migration:
+ *   - Implement migration function then add it to `migrations` variable
+ * 
+ * - Run Migration:
+ *   - Call migrate() with migration function name (such as `migrate('migration_sample')`)
  */
 
 enum MigrationResult {
@@ -24,9 +28,11 @@ function migrate(name: string): MigrationResult {
 
 const migrations: {[name: string]: () => MigrationResult} = {
     migration_sample,
+    // add migration fuction here
 }
 
 // ---- Migrations
+// add migration function here
 function migration_sample(): MigrationResult {
     // do migration here
     return MigrationResult.FAILED
