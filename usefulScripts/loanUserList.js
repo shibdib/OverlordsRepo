@@ -6,7 +6,7 @@
 // global.LOANlist will contain an array of usernames after global.populateLOANlist() runs twice in a row (two consecutive ticks).
 // Memory.LOANalliance will contain the alliance short name after global.populateLOANlist() runs twice in a row (two consecutive ticks).
 global.populateLOANlist = function(LOANuser = "LeagueOfAutomatedNations", LOANsegment = 99) {
-    if ((typeof RawMemory.setActiveForeignSegment == "function") && !!~['shard0','shard1','shard2'].indexOf(Game.shard.name)) { // To skip running in sim or private servers which prevents errors
+    if ((typeof RawMemory.setActiveForeignSegment == "function") && !!~['shard0','shard1','shard2','shard3'].indexOf(Game.shard.name)) { // To skip running in sim or private servers which prevents errors
         if ((typeof Memory.lastLOANtime == "undefined") || (typeof global.LOANlist == "undefined")) {
             Memory.lastLOANtime = Game.time - 1001;
             global.LOANlist = [];
@@ -21,19 +21,26 @@ global.populateLOANlist = function(LOANuser = "LeagueOfAutomatedNations", LOANse
             Memory.lastLOANtime = Game.time;
             if (RawMemory.foreignSegment.data == null) return false;
             else {
+                let myUsername = ""; // Blank! Will be auto-filled.
                 let LOANdata = JSON.parse(RawMemory.foreignSegment.data);
                 let LOANdataKeys = Object.keys(LOANdata);
                 let allMyRooms = _.filter(Game.rooms, (aRoom) => (typeof aRoom.controller != "undefined") && aRoom.controller.my);
                 if (allMyRooms.length == 0) {
-                    global.LOANlist = [];
-                    Memory.LOANalliance = "";
-                    return false;
-                }
-                let myUsername = allMyRooms[0].controller.owner.username;
+                    let allMyCreeps = _.filter(Game.creeps, (creep) => true);
+                    if (allMyCreeps.length == 0) {
+                        global.LOANlist = [];
+                        Memory.LOANalliance = "";
+                        return false;
+                    } else myUsername = allMyCreeps[0].owner.username;
+                } else myUsername = allMyRooms[0].controller.owner.username;
                 for (let iL = (LOANdataKeys.length-1); iL >= 0; iL--) {
                     if (LOANdata[LOANdataKeys[iL]].indexOf(myUsername) >= 0) {
                         //console.log("Player",myUsername,"found in alliance",LOANdataKeys[iL]);
+                        let disavowed = ['BADuser1','Zenga']; 
                         global.LOANlist = LOANdata[LOANdataKeys[iL]];
+                        global.LOANlist = global.LOANlist.filter(function(uname){
+                            return disavowed.indexOf(uname) < 0;
+                        });
                         Memory.LOANalliance = LOANdataKeys[iL].toString();
                         return true;
                     }
