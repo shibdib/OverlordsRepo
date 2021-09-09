@@ -1,31 +1,48 @@
-Below if the standardized format for setting up a public segment that lists room needs. We can use this to automate the transfer of boosts/minerals/etc..
+Basically this stuff goes in segment 98 which needs to be set public/active whatever. It should be an array of objects if done correctly (stringified because it's a segment)
+
+3 types of requests
+0 - Resource requests
+1 - Defense requests
+2 - Attack requests
+
+```// Example resource request
+{
+   requestType: 0,
+   resourceType: boost,
+   maxAmount: amountNeeded,
+   roomName: roomRequestingResources,
+   priority: 0.1
+}
+
+// Example defense
+{
+   requestType: 1,
+   roomName: roomRequestingDefenders,
+   priority: 0.1
+}
+
+// Example attack
+{
+   requestType: 2,
+   roomName: targetRoom,
+   priority: 0.1
+}
+```
+I trawl thru requests via the following function. ALLY_HELP_REQUESTS is a global object so I can filter these requests in the applicable modules. FRIENDLIES being an array of friendly names.
 
 ```
-
-    let roomNeeds = {
-        "W48S28": {
-            "modified": Game.time,
-            "energy": true,
-            "XGH2O": true
-        },
-        "W51S25": {
-            "modified": Game.time,
-            "power": true
-        },
-        "W46S27": {
-            "modified": Game.time,
-            "G": true,
-            "H": true
-        },
+function logRequests() {
+    // Store last tick
+    if (RawMemory.foreignSegment && FRIENDLIES.includes(RawMemory.foreignSegment.username) && RawMemory.foreignSegment.id === 98) {
+        ALLY_HELP_REQUESTS[RawMemory.foreignSegment.username] = JSON.parse(RawMemory.foreignSegment.data);
     }
-
-    if (JSON.stringify(roomNeeds) !== RawMemory.segments[50]) RawMemory.segments[50] = JSON.stringify(roomNeeds);
-    RawMemory.setPublicSegments([50]);
-    RawMemory.setActiveSegments([50]);
+    // Lookup and store for review next tick
+    let filtered = _.filter(FRIENDLIES, (f) => f !== MY_USERNAME);
+    if (filtered.length) {
+        try {
+            RawMemory.setActiveForeignSegment(filtered[Game.time % filtered.length], 98);
+        } catch (e) {
+        }
+    }
+}
 ```
-
-The key will be the room requesting the items. The modified propert will be the ingame tick that any changes to your requests were made. Then each property will be the item followed by the boolean true (or false). 
-
-You will then set this as your **[50]** public segment. This is important as having everyone use the same number public segment avoids confusion in any code that caches this info.
-
-The use of this is not required, but if implemented it should make sending and receiving boosts in short notice much easier.
